@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training Platform</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="favicon.png"> <!-- Add a favicon (create or download a simple icon) -->
+</head>
+<body>
+  <!-- Loading Spinner -->
+  <div id="loading-spinner" class="spinner hidden"></div>
+
+  <!-- Login/Register Container -->
+  <div id="auth" class="container">
+    <h1 id="auth-title">Login</h1>
+    <form id="auth-form" novalidate>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <input type="text" id="name" placeholder="Name" class="hidden">
+      <select id="role" class="hidden">
+        <option value="superadmin">Superadmin</option>
+        <option value="companyadmin">Company Admin</option>
+        <option value="user">User</option>
+      </select>
+      <button type="submit" id="auth-button">Login</button>
+    </form>
+    <p id="toggle-auth">Don't have an account? <a href="#" onclick="toggleAuth()">Register</a></p>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="container hidden">
+    <header>
+      <h1>Training Platform</h1>
+      <button id="toggle-theme">Toggle Dark Mode</button>
+      <button id="logout">Logout</button>
+    </header>
+    <div id="content"></div>
+  </div>
+
+  <div id="company-management" class="container hidden">
+    <header>
+      <h1>Manage Company: <span id="company-name"></span></h1>
+      <button id="back-to-dashboard">Back to Dashboard</button>
+      <button id="toggle-theme-company">Toggle Dark Mode</button>
+    </header>
+    <div id="company-content">
+      <h3>Manage Users</h3>
+      <form id="add-user-form" class="form-group">
+        <input type="text" id="user-name" placeholder="User Name" required>
+        <input type="email" id="user-email" placeholder="User Email" required>
+        <input type="password" id="user-password" placeholder="User Password" required>
+        <select id="user-role">
+          <option value="companyadmin">Company Admin</option>
+          <option value="user">User</option>
+        </select>
+        <button type="submit">Add User</button>
+      </form>
+      <div id="users-list" class="grid-layout"></div>
+      <h3>Manage Modules</h3>
+      <div class="module-upload-area">
+        <h4>Upload Training Module</h4>
+        <button id="upload-button">Browse Files</button>
+        <input type="file" id="file-input" accept=".pptx" style="display:none">
+        <input type="text" id="module-title" placeholder="Module Title" required class="module-input">
+        <button id="submit-module" class="module-button" disabled>Upload Module</button>
+        <div id="upload-progress" class="progress-bar hidden">Uploading... <div id="progress-fill"></div></div>
+      </div>
+      <div id="modules" class="grid-layout">
+        <h4>View Training Modules</h4>
+        <div id="module-slideshow" class="slideshow hidden"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Module Viewer -->
+  <div id="module-viewer" class="container hidden">
+    <h2 id="module-title"></h2>
+    <div id="slides"></div>
+    <div class="controls">
+      <button id="prev-slide">Previous</button>
+      <button id="next-slide">Next</button>
+      <button id="take-exam" class="hidden">Take Exam</button>
+    </div>
+    <div id="progress-bar"><div id="progress"></div></div>
+  </div>
+
+  <!-- Exam Viewer -->
+  <div id="exam-viewer" class="container hidden">
+    <h2>Exam</h2>
+    <div id="exam-questions"></div>
+    <button id="submit-exam">Submit</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

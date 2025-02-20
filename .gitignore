@@ -1,0 +1,43 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Temporary directories and files
+temp/
+uploads/
+*.tmp
+*.bak
+
+# Environment variables
+.env
+*.env
+
+# Build and distribution directories
+dist/
+build/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# MongoDB local data (if applicable)
+data/
+mongod.lock
+
+# Project-specific sensitive files
+*.key
+*.pem
