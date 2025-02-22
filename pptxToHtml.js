@@ -2,7 +2,6 @@ const AdmZip = require('adm-zip');
 const { parseStringPromise } = require('xml2js');
 const fs = require('fs');
 const path = require('path');
-
 const getTempDir = () => {
   try {
     const os = require('os');
@@ -11,7 +10,6 @@ const getTempDir = () => {
     return path.join(__dirname, 'temp');
   }
 };
-
 function getShapes(node) {
   let shapes = [];
   if (node['p:sp']) {
@@ -41,11 +39,9 @@ function getShapes(node) {
   }
   return shapes;
 }
-
 function emuToPercent(value, totalEMUs) {
   return (value / totalEMUs) * 100;
 }
-
 function processTextBody(txBody, colorMap) {
   let paragraphs = txBody['a:p'] || [];
   if (!Array.isArray(paragraphs)) paragraphs = [paragraphs];
@@ -89,7 +85,6 @@ function processTextBody(txBody, colorMap) {
   }
   return html;
 }
-
 function processImage(pic, mediaMap, xfrm, tempDir) {
   const blipFill = pic['p:blipFill'];
   if (blipFill && blipFill['a:blip']) {
@@ -98,28 +93,18 @@ function processImage(pic, mediaMap, xfrm, tempDir) {
     if (mediaMap.has(mediaPath)) {
       const tempPath = mediaMap.get(mediaPath);
       const fileExtension = path.extname(tempPath).substring(1).toLowerCase();
-      const mimeType = {
-        jpg: 'jpeg',
-        jpeg: 'jpeg',
-        png: 'png',
-        gif: 'gif',
-        bmp: 'bmp'
-      }[fileExtension] || 'jpeg';
+      const mimeType = { jpg: 'jpeg', jpeg: 'jpeg', png: 'png', gif: 'gif', bmp: 'bmp' }[fileExtension] || 'jpeg';
       const imgData = fs.readFileSync(tempPath, 'base64');
       const imgSrc = `data:image/${mimeType};base64,${imgData}`;
       const x = parseInt(xfrm['a:off']['$'].x);
       const y = parseInt(xfrm['a:off']['$'].y);
       const cx = parseInt(xfrm['a:ext']['$'].cx);
       const cy = parseInt(xfrm['a:ext']['$'].cy);
-      return {
-        html: `<img src="${imgSrc}" alt="Slide image">`,
-        style: `position: absolute; left: ${emuToPercent(x, 12700000)}%; top: ${emuToPercent(y, 9525000)}%; width: ${emuToPercent(cx, 12700000)}%; height: ${emuToPercent(cy, 9525000)}%; object-fit: contain;`
-      };
+      return { html: `<img src="${imgSrc}" alt="Slide image">`, style: `position: absolute; left: ${emuToPercent(x, 12700000)}%; top: ${emuToPercent(y, 9525000)}%; width: ${emuToPercent(cx, 12700000)}%; height: ${emuToPercent(cy, 9525000)}%; object-fit: contain;` };
     }
   }
   return { html: '', style: '' };
 }
-
 function processShape(shape, slideWidthEMUs, slideHeightEMUs, mediaMap, colorMap, tempDir) {
   const spPr = shape['p:spPr'];
   if (!spPr) return '';
@@ -162,7 +147,6 @@ function processShape(shape, slideWidthEMUs, slideHeightEMUs, mediaMap, colorMap
   html += '</div>';
   return html;
 }
-
 function renderSlideHtml(parsedSlide, slideWidthEMUs, slideHeightEMUs, mediaMap, colorMap, tempDir) {
   const spTree = parsedSlide['p:sld']['p:cSld']['p:spTree'] || {};
   const allShapes = getShapes(spTree);
@@ -183,13 +167,7 @@ function renderSlideHtml(parsedSlide, slideWidthEMUs, slideHeightEMUs, mediaMap,
           if (mediaMap.has(mediaPath)) {
             const tempPath = mediaMap.get(mediaPath);
             const fileExtension = path.extname(tempPath).substring(1).toLowerCase();
-            const mimeType = {
-              jpg: 'jpeg',
-              jpeg: 'jpeg',
-              png: 'png',
-              gif: 'gif',
-              bmp: 'bmp'
-            }[fileExtension] || 'jpeg';
+            const mimeType = { jpg: 'jpeg', jpeg: 'jpeg', png: 'png', gif: 'gif', bmp: 'bmp' }[fileExtension] || 'jpeg';
             const imgData = fs.readFileSync(tempPath, 'base64');
             const imgSrc = `data:image/${mimeType};base64,${imgData}`;
             html = `<div class="slide" style="position: relative; width: 100%; padding-top: ${heightPercentage}%; background-image: url('${imgSrc}'); background-size: cover; overflow: visible;">`;
@@ -217,7 +195,6 @@ function renderSlideHtml(parsedSlide, slideWidthEMUs, slideHeightEMUs, mediaMap,
   html += '</div>';
   return html;
 }
-
 async function pptxToHtml(pptxInput) {
   try {
     let zip;
@@ -293,5 +270,4 @@ async function pptxToHtml(pptxInput) {
     throw new Error(`Failed to process PPTX file: ${err.message}`);
   }
 }
-
 module.exports = pptxToHtml;

@@ -1,10 +1,4 @@
-/* style.css */
-/* Comprehensive styling for the Training Platform */
-
-/* Import modern font for better aesthetics */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
-/* CSS Variables for consistency */
 :root {
   --bg: #f0f0f0;
   --text: #333;
@@ -15,32 +9,25 @@
   --transition: all 0.3s ease;
   --spacing: 20px;
 }
-
-/* Dark mode variables */
 body.dark {
   --bg: #1a1a1a;
   --text: #fff;
   --card-bg: #2a2a2a;
   --shadow: rgba(0, 0, 0, 0.3);
 }
-
-/* Reset and base styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
 body {
   font-family: 'Roboto', sans-serif;
   background: var(--bg);
   color: var(--text);
   transition: var(--transition);
 }
-
-/* Containers */
 .container {
-  max-width: 900px;
+  max-width: 960px;
   margin: 0 auto;
   padding: var(--spacing);
   background: var(--card-bg);
@@ -48,20 +35,15 @@ body {
   box-shadow: 0 10px 20px var(--shadow);
   animation: fadeIn 0.5s ease-in-out;
 }
-
 .hidden {
   display: none;
 }
-
-/* Header styling */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing);
 }
-
-/* Form elements */
 input, select, textarea {
   display: block;
   width: 100%;
@@ -72,13 +54,10 @@ input, select, textarea {
   font-size: 16px;
   transition: border-color 0.3s ease;
 }
-
 input:focus, select:focus, textarea:focus {
   border-color: var(--primary);
   outline: none;
 }
-
-/* Button base styling */
 button, .btn {
   padding: 12px 24px;
   background: var(--primary);
@@ -89,23 +68,14 @@ button, .btn {
   transition: var(--transition);
   font-size: 16px;
 }
-
 button:hover, .btn:hover {
   background: #0056b3;
   transform: translateY(-2px);
 }
-
 button:disabled, .btn:disabled {
   background: #ccc;
   cursor: not-allowed;
 }
-
-/* Specific button styles */
-#auth-button, #add-company, #upload-button, #submit-module, #toggle-theme, #logout, #back-to-dashboard, #toggle-theme-company, #prev-slide, #next-slide, #take-exam, #submit-exam {
-  /* Inherits from button base */
-}
-
-/* Card styling */
 .company-card, .user-card, .module-card {
   padding: 20px;
   margin: 15px 0;
@@ -114,21 +84,16 @@ button:disabled, .btn:disabled {
   box-shadow: 0 5px 10px var(--shadow);
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
 .company-card:hover, .user-card:hover, .module-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px var(--shadow);
 }
-
-/* Grid layout for users and modules */
 .grid-layout {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: var(--spacing);
   margin: var(--spacing) 0;
 }
-
-/* Module upload area */
 .module-upload-area {
   margin: var(--spacing) 0;
   padding: var(--spacing);
@@ -136,8 +101,6 @@ button:disabled, .btn:disabled {
   border-radius: var(--border-radius);
   box-shadow: 0 5px 10px var(--shadow);
 }
-
-/* Progress bars */
 #progress-bar, .progress-bar {
   width: 100%;
   height: 20px;
@@ -146,7 +109,6 @@ button:disabled, .btn:disabled {
   margin: 10px 0;
   overflow: hidden;
 }
-
 #progress, #progress-fill {
   height: 100%;
   background: var(--primary);
@@ -154,8 +116,6 @@ button:disabled, .btn:disabled {
   border-radius: 10px;
   transition: width 0.3s ease;
 }
-
-/* Slideshow */
 #module-slideshow, #slides {
   margin-top: var(--spacing);
   padding: var(--spacing);
@@ -163,7 +123,6 @@ button:disabled, .btn:disabled {
   border-radius: var(--border-radius);
   box-shadow: 0 5px 10px var(--shadow);
 }
-
 #module-slideshow img, #slides img {
   max-width: 100%;
   border-radius: var(--border-radius);
@@ -171,57 +130,66 @@ button:disabled, .btn:disabled {
   margin: 10px auto;
   transition: opacity 0.3s ease;
 }
-
-/* Controls for slideshow */
 .controls {
   margin-top: var(--spacing);
   display: flex;
   gap: 10px;
   justify-content: center;
 }
-
-/* Table styling for completion status */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: var(--spacing);
 }
-
 th, td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
 }
-
 th {
   background-color: #f5f5f5;
 }
-
 td {
   text-align: center;
 }
-
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-/* Dark mode specific styles */
 body.dark .company-card, body.dark .user-card, body.dark .module-card {
   background: var(--card-bg);
 }
-
 body.dark table th {
   background-color: #333;
   color: var(--text);
 }
-
 body.dark table td {
   color: var(--text);
 }
-
-/* Media queries for responsiveness */
+[contenteditable="true"] {
+  cursor: text;
+}
+[contenteditable="true"]:hover {
+  background-color: #f9f9f9;
+}
+[contenteditable="true"]:focus {
+  outline: 2px solid var(--primary);
+  background-color: #f0f8ff;
+}
+.shape [contenteditable="true"] {
+  overflow: hidden;
+  white-space: pre-wrap;
+}
+.slide {
+  position: relative;
+  width: 960px;
+  height: 540px;
+  background: #fff;
+  overflow: hidden;
+}
+.shape {
+  position: absolute;
+}
 @media (max-width: 600px) {
   .container {
     padding: 15px;
@@ -244,18 +212,8 @@ body.dark table td {
   .grid-layout {
     grid-template-columns: 1fr;
   }
-
-  #slides {
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    min-height: 400px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  #slides h1, #slides p {
-    color: #333;
-    margin: 10px 0;
+  .slide {
+    width: 100%;
+    height: auto;
   }
 }

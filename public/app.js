@@ -4,8 +4,6 @@ let companyId = null;
 let currentModule = null;
 let currentSlide = 0;
 let isRegister = false;
-
-// Utility function to show notifications
 function showNotification(message, type = 'success') {
   const notification = document.createElement('div');
   notification.className = `notification ${type}`;
@@ -13,24 +11,19 @@ function showNotification(message, type = 'success') {
   document.body.appendChild(notification);
   setTimeout(() => notification.remove(), 3000);
 }
-
-// Utility function to show loading spinner
 function showLoading(show = true) {
   const spinner = document.getElementById('loading-spinner');
   if (spinner) spinner.style.display = show ? 'block' : 'none';
 }
-
 const show = (id) => {
   const element = document.getElementById(id);
   if (!element) {
-    console.error(`Element with ID '${id}' not found in DOM`);
+    console.error(`Element with ID '${id}' not found`);
     return;
   }
   document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
   element.classList.remove('hidden');
 };
-
-// Toggle between login and register forms
 function toggleAuth() {
   isRegister = !isRegister;
   const authTitle = document.getElementById('auth-title');
@@ -38,12 +31,10 @@ function toggleAuth() {
   const nameInput = document.getElementById('name');
   const roleSelect = document.getElementById('role');
   const toggleLink = document.getElementById('toggle-auth');
-
   if (!authTitle || !authButton || !nameInput || !roleSelect || !toggleLink) {
-    console.error('One or more DOM elements not found for toggleAuth');
+    console.error('Missing DOM element for toggleAuth');
     return;
   }
-
   if (isRegister) {
     authTitle.textContent = 'Register';
     authButton.textContent = 'Register';
@@ -58,23 +49,19 @@ function toggleAuth() {
     toggleLink.innerHTML = 'Don\'t have an account? <a href="#" onclick="toggleAuth()">Register</a>';
   }
 }
-
-// Authentication handling
 document.getElementById('auth-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
   const name = document.getElementById('name').value;
   const role = document.getElementById('role').value;
-
   showLoading(true);
-
   if (isRegister) {
     try {
       const res = await fetch('/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ name, email, password, role })
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
@@ -88,7 +75,7 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
       const res = await fetch('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password })
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
@@ -103,7 +90,6 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
   }
   showLoading(false);
 });
-
 document.getElementById('logout').addEventListener('click', () => {
   if (confirm('Are you sure you want to log out?')) {
     token = null;
@@ -112,11 +98,9 @@ document.getElementById('logout').addEventListener('click', () => {
     show('auth');
   }
 });
-
-// Dashboard rendering
 async function renderDashboard() {
   const content = document.getElementById('content');
-  if (!content) return console.error('Content element not found in DOM');
+  if (!content) return console.error('Content element not found');
   showLoading(true);
   if (userRole === 'superadmin') {
     content.innerHTML = `
@@ -153,26 +137,18 @@ async function renderDashboard() {
   }
   showLoading(false);
 }
-
-// View company details
 async function viewCompanyDetails(companyId) {
   showLoading(true);
   try {
     const companyRes = await fetch(`/companies/${companyId}`, { headers: { Authorization: `Bearer ${token}` } });
     if (!companyRes.ok) throw new Error(`Failed to fetch company: ${companyRes.status}`);
     const company = await companyRes.json();
-
     const usersRes = await fetch('/users', { headers: { Authorization: `Bearer ${token}` } });
     if (!usersRes.ok) throw new Error(`Failed to fetch users: ${usersRes.status}`);
     const users = (await usersRes.json()).filter(u => u.companyId?.toString() === companyId.toString());
-
     const modulesRes = await fetch('/modules', { headers: { Authorization: `Bearer ${token}` } });
     if (!modulesRes.ok) throw new Error(`Failed to fetch modules: ${modulesRes.status}`);
     const modules = (await modulesRes.json()).filter(m => m.companyId?.toString() === companyId.toString());
-
-    console.log('View Details - Company ID:', companyId);
-    console.log('View Details - Modules:', modules);
-
     const content = document.getElementById('content');
     if (content) {
       content.innerHTML = `
@@ -204,8 +180,6 @@ async function viewCompanyDetails(companyId) {
   }
   showLoading(false);
 }
-
-// Add company
 async function addCompany() {
   const companyName = prompt('Enter company name:');
   if (!companyName) return;
@@ -214,7 +188,7 @@ async function addCompany() {
     const res = await fetch('/companies', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ name: companyName }),
+      body: JSON.stringify({ name: companyName })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
@@ -226,19 +200,15 @@ async function addCompany() {
   }
   showLoading(false);
 }
-
-// Manage company
 async function manageCompany(companyId, companyName) {
   show('company-management');
   const companyNameElement = document.getElementById('company-name');
   if (companyNameElement) companyNameElement.textContent = companyName;
   renderCompanyManagement(companyId);
 }
-
-// Render company management
 async function renderCompanyManagement(companyId = null) {
   const content = document.getElementById('company-content');
-  if (!content) return console.error('Company content element not found in DOM');
+  if (!content) return console.error('Company content element not found');
   content.innerHTML = `
     <h3>Manage Users</h3>
     <form id="add-user-form" class="form-group">
@@ -267,10 +237,8 @@ async function renderCompanyManagement(companyId = null) {
     <h3>Completion Status</h3>
     <div id="completion-table"></div>
   `;
-
   const backButton = document.getElementById('back-to-dashboard');
   if (backButton) backButton.addEventListener('click', () => { show('dashboard'); renderDashboard(); });
-
   const addUserForm = document.getElementById('add-user-form');
   if (addUserForm) {
     addUserForm.addEventListener('submit', async (e) => {
@@ -284,7 +252,6 @@ async function renderCompanyManagement(companyId = null) {
       renderCompanyManagement(companyId);
     });
   }
-
   const uploadButton = document.getElementById('upload-button');
   const fileInput = document.getElementById('file-input');
   const submitModuleButton = document.getElementById('submit-module');
@@ -297,11 +264,10 @@ async function renderCompanyManagement(companyId = null) {
         fileInput.value = '';
         document.getElementById('module-title').value = '';
         submitModuleButton.disabled = true;
-        renderCompanyManagement(companyId); // Refresh after upload
+        renderCompanyManagement(companyId);
       }
     });
   }
-
   try {
     const usersRes = await fetch('/users', { headers: { Authorization: `Bearer ${token}` } });
     if (!usersRes.ok) throw new Error(`Failed to fetch users: ${usersRes.status}`);
@@ -313,12 +279,9 @@ async function renderCompanyManagement(companyId = null) {
         <p>Email: ${u.email}</p>
       </div>
     `).join('') : '<p>No users found.</p>';
-
     const modulesRes = await fetch('/modules', { headers: { Authorization: `Bearer ${token}` } });
     if (!modulesRes.ok) throw new Error(`Failed to fetch modules: ${modulesRes.status}`);
     const modules = (await modulesRes.json()).filter(m => m.companyId?.toString() === companyId?.toString());
-    console.log('Manage - Company ID:', companyId);
-    console.log('Manage - Modules:', modules);
     const modulesElement = document.getElementById('modules');
     if (modulesElement) {
       modulesElement.innerHTML = `<h4>View Training Modules</h4>` + (modules.length ? modules.map(m => `
@@ -327,10 +290,10 @@ async function renderCompanyManagement(companyId = null) {
           <p>Slides: ${m.slidesHtml?.length || 0}</p>
           <button onclick="viewModule('${m._id}')">${userRole === 'user' ? 'Start' : 'View'}</button>
           <button onclick="editModuleTitle('${m._id}', '${m.title}')">Edit Title</button>
+          <button onclick="deleteModule('${m._id}', '${m.title}')">Delete</button>
         </div>
       `).join('') : '<p>No modules found.</p>');
     }
-
     const completionsRes = await fetch(`/completions/company/${companyId}`, { headers: { Authorization: `Bearer ${token}` } });
     if (!completionsRes.ok) throw new Error(`Failed to fetch completions: ${completionsRes.status}`);
     const completions = await completionsRes.json();
@@ -365,8 +328,6 @@ async function renderCompanyManagement(companyId = null) {
     content.innerHTML += `<p>Error: ${error.message}</p>`;
   }
 }
-
-// Add user
 async function addUser(companyId, name, email, password, role) {
   try {
     const res = await fetch('/users', {
@@ -377,7 +338,6 @@ async function addUser(companyId, name, email, password, role) {
       },
       body: JSON.stringify({ name, email, password, role, companyId })
     });
-
     const data = await res.json();
     if (res.ok) {
       showNotification('User added successfully!');
@@ -389,30 +349,37 @@ async function addUser(companyId, name, email, password, role) {
     showNotification(`Failed to add user: ${error.message}`, 'error');
   }
 }
-
-// Upload module
 async function uploadModule(file, companyId) {
   const formData = new FormData();
   const moduleTitle = document.getElementById('module-title')?.value.trim() || '';
-  formData.append('title', moduleTitle);
-  formData.append('file', file);
-  formData.append('companyId', companyId);
-
+  formData.append('pptx', file);
   const progressFill = document.getElementById('progress-fill');
   const uploadProgress = document.getElementById('upload-progress');
   if (progressFill && uploadProgress) {
     uploadProgress.classList.remove('hidden');
     progressFill.style.width = '0%';
   }
-
   try {
-    const res = await fetch('/modules', {
+    const res = await fetch('/upload-pptx', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
-      body: formData,
+      body: formData
     });
     if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
     const data = await res.json();
+    const moduleRes = await fetch('/modules', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        title: moduleTitle || `Untitled Module - ${new Date().toISOString().split('T')[0]}`,
+        companyId: companyId,
+        slidesHtml: data.slides
+      })
+    });
+    if (!moduleRes.ok) throw new Error(`Module save failed: ${moduleRes.status}`);
     if (progressFill) progressFill.style.width = '100%';
     setTimeout(() => {
       if (uploadProgress) uploadProgress.classList.add('hidden');
@@ -425,10 +392,9 @@ async function uploadModule(file, companyId) {
     showNotification(`Failed to upload module: ${error.message}`, 'error');
   }
 }
-
-// Render modules for regular users
 async function renderModules(companyId = null) {
-  const modules = await (await fetch('/modules', { headers: { Authorization: `Bearer ${token}` } })).json();
+  const res = await fetch('/modules', { headers: { Authorization: `Bearer ${token}` } });
+  const modules = await res.json();
   const filteredModules = companyId ? modules.filter(m => m.companyId?.toString() === companyId.toString()) : modules;
   const modulesElement = document.getElementById('modules');
   if (modulesElement) {
@@ -441,29 +407,67 @@ async function renderModules(companyId = null) {
     `).join('');
   }
 }
-
-// View module (Updated with error handling)
 async function viewModule(moduleId) {
   try {
-    const res = await fetch(`/modules/${moduleId}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const res = await fetch(`/modules/${moduleId}`, { headers: { Authorization: `Bearer ${token}` } });
     if (!res.ok) throw new Error(`Failed to fetch module: ${res.status}`);
     currentModule = await res.json();
     currentSlide = 0;
     document.getElementById('module-viewer').classList.remove('hidden');
     document.getElementById('module-title').textContent = currentModule.title;
     renderSlide();
+    if (userRole === 'companyadmin') {
+      const saveButton = document.getElementById('save-slide');
+      saveButton.classList.remove('hidden');
+      saveButton.onclick = async () => {
+        const slideHtml = document.getElementById('slides').innerHTML;
+        try {
+          const res = await fetch(`/modules/${currentModule._id}/slides/${currentSlide}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ html: slideHtml })
+          });
+          if (!res.ok) throw new Error('Failed to save slide');
+          showNotification('Slide saved successfully!');
+        } catch (error) {
+          console.error('Error saving slide:', error);
+          showNotification('Failed to save slide', 'error');
+        }
+      };
+      const deleteSlideButton = document.getElementById('delete-slide');
+      deleteSlideButton.classList.remove('hidden');
+      deleteSlideButton.onclick = async () => {
+        if (confirm('Are you sure you want to delete this slide?')) {
+          try {
+            const res = await fetch(`/modules/${currentModule._id}/slides/${currentSlide}`, {
+              method: 'DELETE',
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error('Failed to delete slide');
+            currentModule.slidesHtml.splice(currentSlide, 1);
+            if (currentSlide >= currentModule.slidesHtml.length) currentSlide = currentModule.slidesHtml.length - 1;
+            renderSlide();
+            showNotification('Slide deleted successfully!');
+          } catch (error) {
+            console.error('Error deleting slide:', error);
+            showNotification('Failed to delete slide', 'error');
+          }
+        }
+      };
+    }
   } catch (error) {
     console.error('Error viewing module:', error);
     showNotification(`Error: ${error.message}`, 'error');
   }
 }
-
 function renderSlide() {
   const slides = document.getElementById('slides');
   if (slides) {
-    slides.innerHTML = currentModule.slidesHtml[currentSlide] || '<p>No slide content</p>';
+    const slideContent = currentModule.slidesHtml[currentSlide];
+    slides.innerHTML = slideContent;
   }
   const progress = document.getElementById('progress');
   if (progress) {
@@ -473,8 +477,6 @@ function renderSlide() {
   document.getElementById('prev-slide').disabled = currentSlide === 0;
   document.getElementById('next-slide').disabled = currentSlide === currentModule.slidesHtml.length - 1;
 }
-
-// Edit module title (New function)
 async function editModuleTitle(moduleId, currentTitle) {
   const newTitle = prompt('Enter new module title:', currentTitle);
   if (newTitle && newTitle.trim()) {
@@ -487,9 +489,7 @@ async function editModuleTitle(moduleId, currentTitle) {
         },
         body: JSON.stringify({ title: newTitle.trim() })
       });
-      if (!res.ok) {
-        throw new Error(`Failed to update module: ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`Failed to update module: ${res.status}`);
       const updatedModule = await res.json();
       showNotification('Module title updated successfully!');
       renderCompanyManagement(companyId);
@@ -499,7 +499,22 @@ async function editModuleTitle(moduleId, currentTitle) {
     }
   }
 }
-
+async function deleteModule(moduleId, title) {
+  if (confirm(`Are you sure you want to delete the module "${title}"?`)) {
+    try {
+      const res = await fetch(`/modules/${moduleId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Failed to delete module');
+      showNotification('Module deleted successfully!');
+      renderCompanyManagement(companyId);
+    } catch (error) {
+      console.error('Error deleting module:', error);
+      showNotification(`Error: ${error.message}`, 'error');
+    }
+  }
+}
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('prev-slide').addEventListener('click', () => {
     if (currentSlide > 0) {
@@ -513,8 +528,6 @@ document.addEventListener('DOMContentLoaded', () => {
       renderSlide();
     }
   });
-
-  // Dark mode toggle
   document.getElementById('toggle-theme').addEventListener('click', () => {
     document.body.classList.toggle('dark');
   });
@@ -522,5 +535,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.toggle('dark');
   });
 });
-
 show('auth');
